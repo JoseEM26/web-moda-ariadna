@@ -3,81 +3,12 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { ShoppingBag, Heart } from "lucide-react";
+import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
+import { products } from "@/data/products";
 
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
-  isNew?: boolean;
-  category: string;
-}
-
-const products: Product[] = [
-  {
-    id: 1,
-    name: "Cartera Rosa Cuero",
-    price: 89,
-    image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&h=500&fit=crop",
-    isNew: true,
-    category: "carteras",
-  },
-  {
-    id: 2,
-    name: "Bolso Lavanda",
-    price: 120,
-    image: "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=400&h=500&fit=crop",
-    category: "carteras",
-  },
-  {
-    id: 3,
-    name: "Paleta Sombras",
-    price: 45,
-    image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=400&h=500&fit=crop",
-    isNew: true,
-    category: "maquillaje",
-  },
-  {
-    id: 4,
-    name: "Labial Rosa Mate",
-    price: 28,
-    image: "https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=400&h=500&fit=crop",
-    category: "maquillaje",
-  },
-  {
-    id: 5,
-    name: "Clutch Dorado",
-    price: 75,
-    image: "https://images.unsplash.com/photo-1566150905458-1bf1fc113f0d?w=400&h=500&fit=crop",
-    category: "carteras",
-  },
-  {
-    id: 6,
-    name: "Rímel Volumen",
-    price: 32,
-    image: "https://images.unsplash.com/photo-1631214524020-7e18db9a8f92?w=400&h=500&fit=crop",
-    category: "maquillaje",
-  },
-  {
-    id: 7,
-    name: "Mochila Mini",
-    price: 95,
-    image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=500&fit=crop",
-    category: "carteras",
-  },
-  {
-    id: 8,
-    name: "Iluminador Dulce",
-    price: 38,
-    image: "https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?w=400&h=500&fit=crop",
-    isNew: true,
-    category: "maquillaje",
-  },
-];
-
-function ProductCard({ product, index }: { product: Product; index: number }) {
+function ProductCard({ product, index }: { product: typeof products[0]; index: number }) {
   const [isHovered, setIsHovered] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
@@ -98,26 +29,28 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
     >
       <div className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300">
         <div className="relative aspect-[4/5] overflow-hidden bg-lavender-dream/20">
-          {!imageLoaded && !imageError && (
-            <div className="absolute inset-0 bg-gradient-to-br from-rose-blush/20 to-lavender-dream/20 animate-pulse" />
-          )}
+          <Link href={`/product/${product.id}`}>
+            {!imageLoaded && !imageError && (
+              <div className="absolute inset-0 bg-gradient-to-br from-rose-blush/20 to-lavender-dream/20 animate-pulse" />
+            )}
 
-          {imageError ? (
-            <div className="absolute inset-0 flex items-center justify-center bg-rose-blush/10">
-              <span className="text-rose-blush text-4xl">👛</span>
-            </div>
-          ) : (
-            <motion.img
-              src={product.image}
-              alt={product.name}
-              className="w-full h-full object-cover"
-              onLoad={() => setImageLoaded(true)}
-              onError={() => setImageError(true)}
-              animate={{ scale: isHovered ? 1.08 : 1 }}
-              transition={{ duration: 0.4, ease: "easeOut" }}
-              style={{ opacity: imageLoaded ? 1 : 0 }}
-            />
-          )}
+            {imageError ? (
+              <div className="absolute inset-0 flex items-center justify-center bg-rose-blush/10">
+                <span className="text-rose-blush text-4xl">👛</span>
+              </div>
+            ) : (
+              <motion.img
+                src={product.image}
+                alt={product.name}
+                className="w-full h-full object-cover cursor-pointer"
+                onLoad={() => setImageLoaded(true)}
+                onError={() => setImageError(true)}
+                animate={{ scale: isHovered ? 1.08 : 1 }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
+                style={{ opacity: imageLoaded ? 1 : 0 }}
+              />
+            )}
+          </Link>
 
           {product.isNew && (
             <div className="absolute top-4 left-4 bg-hot-pink text-white text-xs font-medium px-3 py-1.5 rounded-full">
@@ -126,8 +59,11 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
           )}
 
           <motion.button
-            onClick={() => toggleItem(product)}
-            className="absolute top-4 right-4 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-md hover:bg-white transition-colors"
+            onClick={(e) => {
+              e.preventDefault();
+              toggleItem(product);
+            }}
+            className="absolute top-4 right-4 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-md hover:bg-white transition-colors z-10"
             aria-label={inWishlist ? "Remove from wishlist" : "Add to wishlist"}
             whileTap={{ scale: 0.9 }}
           >
@@ -149,7 +85,10 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
             className="absolute bottom-4 left-4 right-4"
           >
             <button
-              onClick={() => addItem(product)}
+              onClick={(e) => {
+                e.preventDefault();
+                addItem(product);
+              }}
               className="w-full bg-hot-pink text-white py-3 rounded-xl font-medium flex items-center justify-center gap-2 hover:bg-deep-rose transition-colors active:scale-95"
             >
               <ShoppingBag size={18} />
@@ -158,14 +97,16 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
           </motion.div>
         </div>
 
-        <div className="p-5">
-          <h3 className="font-medium text-text-primary mb-1 group-hover:text-hot-pink transition-colors">
-            {product.name}
-          </h3>
-          <p className="font-script text-hot-pink text-xl">
-            €{product.price}
-          </p>
-        </div>
+        <Link href={`/product/${product.id}`}>
+          <div className="p-5 cursor-pointer">
+            <h3 className="font-medium text-text-primary mb-1 group-hover:text-hot-pink transition-colors">
+              {product.name}
+            </h3>
+            <p className="font-script text-hot-pink text-xl">
+              €{product.price}
+            </p>
+          </div>
+        </Link>
       </div>
     </motion.article>
   );
