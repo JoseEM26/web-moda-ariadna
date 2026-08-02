@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { ShoppingBag, Heart } from "lucide-react";
+import { useCart } from "@/context/CartContext";
+import { useWishlist } from "@/context/WishlistContext";
 
 interface Product {
   id: number;
@@ -77,9 +79,12 @@ const products: Product[] = [
 
 function ProductCard({ product, index }: { product: Product; index: number }) {
   const [isHovered, setIsHovered] = useState(false);
-  const [isWishlisted, setIsWishlisted] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const { addItem } = useCart();
+  const { isInWishlist, toggleItem } = useWishlist();
+
+  const inWishlist = isInWishlist(product.id);
 
   return (
     <motion.article
@@ -121,18 +126,18 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
           )}
 
           <motion.button
-            onClick={() => setIsWishlisted(!isWishlisted)}
+            onClick={() => toggleItem(product)}
             className="absolute top-4 right-4 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-md hover:bg-white transition-colors"
-            aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
+            aria-label={inWishlist ? "Remove from wishlist" : "Add to wishlist"}
             whileTap={{ scale: 0.9 }}
           >
             <motion.div
-              animate={{ scale: isWishlisted ? [1, 1.3, 1] : 1 }}
+              animate={{ scale: inWishlist ? [1, 1.3, 1] : 1 }}
               transition={{ duration: 0.3 }}
             >
               <Heart
                 size={20}
-                className={isWishlisted ? "fill-hot-pink text-hot-pink" : "text-text-secondary"}
+                className={inWishlist ? "fill-hot-pink text-hot-pink" : "text-text-secondary"}
               />
             </motion.div>
           </motion.button>
@@ -143,7 +148,10 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
             transition={{ duration: 0.3 }}
             className="absolute bottom-4 left-4 right-4"
           >
-            <button className="w-full bg-hot-pink text-white py-3 rounded-xl font-medium flex items-center justify-center gap-2 hover:bg-deep-rose transition-colors active:scale-95">
+            <button
+              onClick={() => addItem(product)}
+              className="w-full bg-hot-pink text-white py-3 rounded-xl font-medium flex items-center justify-center gap-2 hover:bg-deep-rose transition-colors active:scale-95"
+            >
               <ShoppingBag size={18} />
               Añadir al Carrito
             </button>

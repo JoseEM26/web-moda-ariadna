@@ -3,12 +3,14 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Heart, ShoppingBag, Menu, X } from "lucide-react";
+import { useCart } from "@/context/CartContext";
+import { useWishlist } from "@/context/WishlistContext";
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [wishlistCount] = useState(3);
-  const [cartCount] = useState(2);
+  const { totalItems: cartCount, openCart } = useCart();
+  const { totalItems: wishlistCount } = useWishlist();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -47,7 +49,6 @@ export default function Header() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 md:h-20">
-          {/* Mobile menu button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className="md:hidden p-2 rounded-full hover:bg-rose-blush/20 transition-colors"
@@ -56,7 +57,6 @@ export default function Header() {
             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
 
-          {/* Nav links - desktop */}
           <nav className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
               <a
@@ -70,15 +70,14 @@ export default function Header() {
             ))}
           </nav>
 
-          {/* Logo */}
           <a
             href="#home"
+            onClick={(e) => smoothScroll(e, "#home")}
             className="font-display text-2xl md:text-3xl font-semibold tracking-widest text-text-primary hover:text-hot-pink transition-colors"
           >
             P&A COQUETTE
           </a>
 
-          {/* Actions */}
           <div className="flex items-center gap-3 md:gap-4">
             <button
               className="p-2 rounded-full hover:bg-rose-blush/20 transition-colors relative"
@@ -93,6 +92,7 @@ export default function Header() {
             </button>
 
             <button
+              onClick={openCart}
               className="p-2 rounded-full hover:bg-rose-blush/20 transition-colors relative"
               aria-label="Shopping cart"
             >
@@ -107,7 +107,6 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Mobile menu */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.nav

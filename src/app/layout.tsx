@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Quicksand, Petit_Formal_Script } from "next/font/google";
 import "./globals.css";
+import { CartProvider } from "@/context/CartContext";
+import { WishlistProvider } from "@/context/WishlistContext";
+import CartDrawer from "@/components/CartDrawer";
 
 const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
@@ -41,7 +44,12 @@ export default function RootLayout({
   return (
     <html lang="es" className={`${cormorant.variable} ${quicksand.variable} ${petitFormal.variable}`}>
       <body className="min-h-screen flex flex-col antialiased">
-        {children}
+        <CartProvider>
+          <WishlistProvider>
+            {children}
+            <CartDrawer />
+          </WishlistProvider>
+        </CartProvider>
       </body>
     </html>
   );
