@@ -18,7 +18,7 @@ const products: Product[] = [
     id: 1,
     name: "Cartera Rosa Cuero",
     price: 89,
-    image: "https://picsum.photos/seed/purse2/400/500",
+    image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&h=500&fit=crop",
     isNew: true,
     category: "carteras",
   },
@@ -26,14 +26,14 @@ const products: Product[] = [
     id: 2,
     name: "Bolso Lavanda",
     price: 120,
-    image: "https://picsum.photos/seed/purse3/400/500",
+    image: "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=400&h=500&fit=crop",
     category: "carteras",
   },
   {
     id: 3,
     name: "Paleta Sombras",
     price: 45,
-    image: "https://picsum.photos/seed/makeup2/400/500",
+    image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=400&h=500&fit=crop",
     isNew: true,
     category: "maquillaje",
   },
@@ -41,35 +41,35 @@ const products: Product[] = [
     id: 4,
     name: "Labial Rosa Mate",
     price: 28,
-    image: "https://picsum.photos/seed/makeup3/400/500",
+    image: "https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=400&h=500&fit=crop",
     category: "maquillaje",
   },
   {
     id: 5,
     name: "Clutch Dorado",
     price: 75,
-    image: "https://picsum.photos/seed/purse4/400/500",
+    image: "https://images.unsplash.com/photo-1566150905458-1bf1fc113f0d?w=400&h=500&fit=crop",
     category: "carteras",
   },
   {
     id: 6,
     name: "Rímel Volumen",
     price: 32,
-    image: "https://picsum.photos/seed/makeup4/400/500",
+    image: "https://images.unsplash.com/photo-1631214524020-7e18db9a8f92?w=400&h=500&fit=crop",
     category: "maquillaje",
   },
   {
     id: 7,
     name: "Mochila Mini",
     price: 95,
-    image: "https://picsum.photos/seed/purse5/400/500",
+    image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=500&fit=crop",
     category: "carteras",
   },
   {
     id: 8,
     name: "Iluminador Dulce",
     price: 38,
-    image: "https://picsum.photos/seed/makeup5/400/500",
+    image: "https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?w=400&h=500&fit=crop",
     isNew: true,
     category: "maquillaje",
   },
@@ -79,6 +79,7 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
   const [isHovered, setIsHovered] = useState(false);
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   return (
     <motion.article
@@ -90,33 +91,35 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Card container */}
       <div className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300">
-        {/* Image container */}
         <div className="relative aspect-[4/5] overflow-hidden bg-lavender-dream/20">
-          {/* Skeleton loader */}
-          {!imageLoaded && (
+          {!imageLoaded && !imageError && (
             <div className="absolute inset-0 bg-gradient-to-br from-rose-blush/20 to-lavender-dream/20 animate-pulse" />
           )}
 
-          <motion.img
-            src={product.image}
-            alt={product.name}
-            className="w-full h-full object-cover"
-            onLoad={() => setImageLoaded(true)}
-            animate={{ scale: isHovered ? 1.08 : 1 }}
-            transition={{ duration: 0.4, ease: "easeOut" }}
-            style={{ opacity: imageLoaded ? 1 : 0 }}
-          />
+          {imageError ? (
+            <div className="absolute inset-0 flex items-center justify-center bg-rose-blush/10">
+              <span className="text-rose-blush text-4xl">👛</span>
+            </div>
+          ) : (
+            <motion.img
+              src={product.image}
+              alt={product.name}
+              className="w-full h-full object-cover"
+              onLoad={() => setImageLoaded(true)}
+              onError={() => setImageError(true)}
+              animate={{ scale: isHovered ? 1.08 : 1 }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+              style={{ opacity: imageLoaded ? 1 : 0 }}
+            />
+          )}
 
-          {/* New ribbon */}
           {product.isNew && (
             <div className="absolute top-4 left-4 bg-hot-pink text-white text-xs font-medium px-3 py-1.5 rounded-full">
               Nuevo
             </div>
           )}
 
-          {/* Wishlist button */}
           <motion.button
             onClick={() => setIsWishlisted(!isWishlisted)}
             className="absolute top-4 right-4 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-md hover:bg-white transition-colors"
@@ -134,7 +137,6 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
             </motion.div>
           </motion.button>
 
-          {/* Quick add to cart - appears on hover */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: isHovered ? 1 : 0, y: isHovered ? 0 : 20 }}
@@ -148,7 +150,6 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
           </motion.div>
         </div>
 
-        {/* Product info */}
         <div className="p-5">
           <h3 className="font-medium text-text-primary mb-1 group-hover:text-hot-pink transition-colors">
             {product.name}
@@ -167,10 +168,10 @@ export default function ProductGrid() {
     <section id="products" className="py-16 md:py-24 px-4 bg-gradient-to-b from-cream-white to-white">
       <div className="max-w-7xl mx-auto">
         <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
           className="text-center mb-12 md:mb-16"
         >
           <span className="font-script text-hot-pink text-lg">Favoritos</span>
@@ -178,8 +179,7 @@ export default function ProductGrid() {
             Productos Destacados
           </h2>
           <p className="text-text-secondary mt-4 max-w-2xl mx-auto">
-            Piezas cuidadosamente seleccionadas que combinan calidad, estilo y
-            personalidad para ti.
+            Piezas cuidadosamente seleccionadas que combinan calidad, estilo y personalidad para ti.
           </p>
         </motion.div>
 
@@ -189,7 +189,6 @@ export default function ProductGrid() {
           ))}
         </div>
 
-        {/* View all button */}
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}

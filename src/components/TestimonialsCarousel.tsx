@@ -17,7 +17,7 @@ const testimonials: Testimonial[] = [
   {
     id: 1,
     name: "María García",
-    avatar: "https://picsum.photos/seed/avatar1/100/100",
+    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop",
     rating: 5,
     text: "La cartera que compré es absolutamente beautiful. La calidad supera expectativas y el servicio fue impecable. Ya estoy buscando mi próxima compra.",
     product: "Cartera Rosa Cuero",
@@ -25,7 +25,7 @@ const testimonials: Testimonial[] = [
   {
     id: 2,
     name: "Carolina Ruiz",
-    avatar: "https://picsum.photos/seed/avatar2/100/100",
+    avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop",
     rating: 5,
     text: "Encontré mi paleta de sombras perfecta aquí. Los colores son exactly lo que buscaba y la textura es increíble. 100% recomendado.",
     product: "Paleta Sombras",
@@ -33,7 +33,7 @@ const testimonials: Testimonial[] = [
   {
     id: 3,
     name: "Ana Martínez",
-    avatar: "https://picsum.photos/seed/avatar3/100/100",
+    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop",
     rating: 5,
     text: "El packaging llegó como un regalo, todo tão bem cuidado. La cartera es even prettier que nas fotos. Super recomendado!",
     product: "Bolso Lavanda",
@@ -41,7 +41,7 @@ const testimonials: Testimonial[] = [
   {
     id: 4,
     name: "Sofia López",
-    avatar: "https://picsum.photos/seed/avatar4/100/100",
+    avatar: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=100&h=100&fit=crop",
     rating: 5,
     text: "Compré el kit de maquillaje y foi a melhor decisão. Productos de alta calidad, envío rápido y el soporte es muito atencioso.",
     product: "Kit Maquillaje Premium",

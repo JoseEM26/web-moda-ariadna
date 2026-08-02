@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useMemo, useState } from "react";
+import { useRef, useMemo, useState, Suspense } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Float, Environment } from "@react-three/drei";
 import * as THREE from "three";
@@ -35,7 +35,7 @@ function PurseModel({ mousePosition }: { mousePosition: { x: number; y: number }
   return (
     <Float speed={1.5} rotationIntensity={0.2} floatIntensity={0.3}>
       <group ref={meshRef}>
-        <mesh castShadow>
+        <mesh castShadow receiveShadow>
           <boxGeometry args={[2.5, 1.8, 1]} />
           <meshStandardMaterial
             color="#FFB5C5"
@@ -83,7 +83,7 @@ function PurseModel({ mousePosition }: { mousePosition: { x: number; y: number }
 
 function Sparkles() {
   const sparkles = useMemo(() => {
-    return Array.from({ length: 15 }, (_, idx) => {
+    return Array.from({ length: 12 }, (_, idx) => {
       const seed1 = idx * 4 + 1;
       const seed2 = idx * 4 + 2;
       const seed3 = idx * 4 + 3;
@@ -115,16 +115,24 @@ function Sparkles() {
 function Scene({ mousePosition }: { mousePosition: { x: number; y: number } }) {
   return (
     <>
-      <ambientLight intensity={0.8} />
-      <directionalLight position={[5, 5, 5]} intensity={0.8} />
-      <pointLight position={[-3, 2, 2]} intensity={0.4} color="#E6E6FA" />
-      <pointLight position={[3, -2, 2]} intensity={0.3} color="#FFB5C5" />
+      <ambientLight intensity={1} />
+      <directionalLight position={[5, 5, 5]} intensity={1} />
+      <pointLight position={[-3, 2, 2]} intensity={0.5} color="#E6E6FA" />
+      <pointLight position={[3, -2, 2]} intensity={0.5} color="#FFB5C5" />
 
       <PurseModel mousePosition={mousePosition} />
       <Sparkles />
 
       <Environment preset="studio" />
     </>
+  );
+}
+
+function LoadingFallback() {
+  return (
+    <div className="absolute inset-0 flex items-center justify-center">
+      <div className="w-16 h-16 border-4 border-rose-blush/30 border-t-hot-pink rounded-full animate-spin" />
+    </div>
   );
 }
 
@@ -142,12 +150,15 @@ export default function ThreeDCanvas({ className = "" }: ThreeDCanvasProps) {
     }
   };
 
+  const handleCreated = ({ gl }: { gl: THREE.WebGLRenderer }) => {
+    gl.setClearColor(0x000000, 0);
+    gl.setPixelRatio(window.devicePixelRatio);
+  };
+
   if (!isClient) {
     return (
       <div className={`relative w-full h-full min-h-[300px] md:min-h-[400px] ${className}`}>
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-16 h-16 border-4 border-rose-blush/30 border-t-hot-pink rounded-full animate-spin" />
-        </div>
+        <LoadingFallback />
       </div>
     );
   }
@@ -163,14 +174,17 @@ export default function ThreeDCanvas({ className = "" }: ThreeDCanvasProps) {
       <div className="absolute bottom-8 left-12 w-2 h-2 bg-rose-blush rounded-full animate-sparkle opacity-50" style={{ animationDelay: "1s" }} />
       <div className="absolute bottom-16 right-4 w-4 h-4 bg-lavender-dream rounded-full animate-sparkle opacity-30" style={{ animationDelay: "1.5s" }} />
 
-      <Canvas
-        camera={{ position: [0, 0, 5], fov: 45 }}
-        dpr={1}
-        gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
-        style={{ background: "transparent" }}
-      >
-        <Scene mousePosition={mousePosition} />
-      </Canvas>
+      <Suspense fallback={<LoadingFallback />}>
+        <Canvas
+          camera={{ position: [0, 0, 5], fov: 45 }}
+          dpr={Math.min(window.devicePixelRatio, 2)}
+          gl={{ antialias: true, alpha: true, powerPreference: "high-performance", failIfMajorPerformanceCaveat: false }}
+          style={{ background: "transparent" }}
+          onCreated={handleCreated}
+        >
+          <Scene mousePosition={mousePosition} />
+        </Canvas>
+      </Suspense>
 
       <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-cream-white/80 to-transparent pointer-events-none" />
     </div>

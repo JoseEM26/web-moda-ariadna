@@ -11,7 +11,7 @@ const categories = [
     icon: Handbag,
     gradient: "from-rose-blush/60 to-rose-blush/20",
     hoverGradient: "hover:from-rose-blush/80 hover:to-rose-blush/40",
-    image: "https://picsum.photos/seed/purse1/600/400",
+    image: "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=600&h=400&fit=crop",
   },
   {
     id: "maquillaje",
@@ -20,7 +20,7 @@ const categories = [
     icon: Sparkles,
     gradient: "from-soft-lavender/60 to-lavender-dream/20",
     hoverGradient: "hover:from-soft-lavender/80 hover:to-lavender-dream/40",
-    image: "https://picsum.photos/seed/makeup1/600/400",
+    image: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=600&h=400&fit=crop",
   },
 ];
 
